@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:servicios/core/providers/application_provider.dart';
+import 'package:servicios/core/providers/user_provider.dart';
+import 'package:servicios/core/widgets/dialogs/message.dart';
 import 'package:servicios/features/users/models/user.dart';
 class UserItem extends StatelessWidget {
   final User user;
@@ -7,6 +10,10 @@ class UserItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ApplicationProvider applicationProvider = Provider.of<ApplicationProvider>(
+      context,
+    );
+    UserProvider provider = Provider.of<UserProvider>(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: ExpansionTile(
@@ -43,23 +50,7 @@ class UserItem extends StatelessWidget {
                     _buildDetailRow('Usuario:', user.user),
                     _buildDetailRow('Rol:', user.role),
                   ],
-                ), /*
-                const Divider(),
-                _buildInfoSection(
-                  'Información del Sistema',
-                  [
-                    _buildDetailRow('Último acceso:', _formatDateTime('2024-02-23 10:30:00')),
-                    _buildDetailRow('Fecha de creación:', _formatDate('2023-01-15')),
-                    /*if (user['role'] == 'Técnico') ...[
-                      _buildDetailRow('Especialización:', user['specialization']),
-                      _buildDetailRow('Servicios asignados:', user['assignedServices'].toString()),
-                      _buildDetailRow('Servicios completados:', user['completedServices'].toString()),
-                    ],
-                    if (user['role'] == 'Administrador')
-                      _buildDetailRow('Departamento:', user['department']),*/
-                  ],
-                ),
-                */
+                ), 
                 const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -67,17 +58,42 @@ class UserItem extends StatelessWidget {
                     TextButton.icon(
                       icon: const Icon(Icons.edit),
                       label: const Text('Editar'),
-                      onPressed: () {
-                        // Implementar edición de usuario
-                      },
+                      onPressed: ()=>provider.goToEditUser(user: user),
                     ),
                     const SizedBox(width: 8),
                     TextButton.icon(
                       icon: const Icon(Icons.lock),
                       label: const Text('Cambiar Contraseña'),
-                      onPressed: () {
-                        // Implementar cambio de contraseña
-                      },
+                      onPressed: ()=>provider.goToChangePassword(user: user),
+                    ),
+                    const SizedBox(width: 8),
+                    if (applicationProvider.sesion.auth?.hasPermission('delete_user') ?? false)
+                    TextButton.icon(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                      label: Text(
+                        'Eliminar',
+                        style: TextStyle(
+                          color: user.idStatus == 1 ? Colors.red : Colors.green,
+                        ),
+                      ),
+                      onPressed: ()=> provider.delUser(
+                        idUser: applicationProvider.sesion.auth?.idUser ?? 0, 
+                        idUserDeleted: user.idUser,  
+                        showDialog: (bool success, String message) async {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Message(
+                                message: message, 
+                                onPressed: (){}
+                              );
+                            },
+                          );
+                        },
+                      )
                     ),
                     const SizedBox(width: 8),
                     TextButton.icon(
@@ -91,9 +107,22 @@ class UserItem extends StatelessWidget {
                           color: user.idStatus == 1 ? Colors.red : Colors.green,
                         ),
                       ),
-                      onPressed: () {
-                        // Implementar activación/desactivación de usuario
-                      },
+                      onPressed: ()=> provider.updateActiveUser(
+                        idUser: applicationProvider.sesion.auth?.idUser ?? 0, 
+                        idUserUpdated: user.idUser, 
+                        idStatus: user.idStatus == 1 ? 2 : 1, 
+                        showDialog: (bool success, String message) async {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Message(
+                                message: message, 
+                                onPressed: (){}
+                              );
+                            },
+                          );
+                        },
+                      )
                     ),
                   ],
                 ),
@@ -210,14 +239,4 @@ class UserItem extends StatelessWidget {
     );
   }
 
-
-String _formatDateTime(String dateTime) {
-    final DateTime dt = DateTime.parse(dateTime);
-    return DateFormat('dd/MM/yyyy HH:mm').format(dt);
-  }
-
-  String _formatDate(String date) {
-    final DateTime dt = DateTime.parse(date);
-    return DateFormat('dd/MM/yyyy').format(dt);
-  }
 }

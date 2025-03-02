@@ -13,4 +13,9 @@ class ColorsApp{
   static const Color _blueColor = Color.fromRGBO(4, 28, 54, 1.0);
   static const blueText = _blueColor;
   static const blueIcon = _blueColor;
+
+  // colors for the dialog
+  static const Color buttonText = Color.fromRGBO(255, 255, 255, 1);
+  static const Color buttonBackground = Color.fromRGBO(31, 89, 151, 1);
+  static const Color buttonBackgroundCancel = Color.fromRGBO(255, 0, 0, 1);
 }

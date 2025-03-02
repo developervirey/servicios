@@ -43,4 +43,12 @@ class ApplicationProvider extends ChangeNotifier{
 
   void logout() {}
 
+
+   int selectedPage = 0;
+
+  selectPage(int selected) {
+    selectedPage = selected;
+    notifyListeners();
+  }
+
 }

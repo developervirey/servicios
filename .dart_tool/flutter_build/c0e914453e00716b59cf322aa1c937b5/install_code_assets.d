@@ -1,0 +1,1 @@
+ /Users/villasana/Documents/GitHub/servicios/.dart_tool/flutter_build/c0e914453e00716b59cf322aa1c937b5/native_assets.json: 

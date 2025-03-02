@@ -47,4 +47,8 @@ class Auth{
     );
   }
 
+  // this method is used to check if the user has a permission
+  bool hasPermission(String permission){
+    return permissions.any((element) => element.permission == permission);
+  }
 }

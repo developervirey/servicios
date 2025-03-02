@@ -14,14 +14,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedPage = 0;
-
-  selectPage(int selected) {
-    setState(() {
-      _selectedPage = selected;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     ApplicationProvider provider = context.watch<ApplicationProvider>();
@@ -60,7 +52,7 @@ class _HomePageState extends State<HomePage> {
               leading: Icon(Icons.build),
               title: Text('Mantenimiento'),
               onTap: () {
-              selectPage(0);
+              provider.selectPage(0);
               Navigator.pop(context);
               },
             ),
@@ -68,7 +60,7 @@ class _HomePageState extends State<HomePage> {
               leading: Icon(Icons.people),
               title: Text('Clientes'),
               onTap: () {
-                selectPage(1);
+                provider.selectPage(1);
                 Navigator.pop(context);
               },
             ),
@@ -76,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               leading: Icon(Icons.person),
               title: Text('Usuarios'),
               onTap: () {
-                selectPage(2);
+                provider.selectPage(2);
                 Navigator.pop(context);
               },
             ),
@@ -84,7 +76,7 @@ class _HomePageState extends State<HomePage> {
               leading: Icon(Icons.settings),
               title: Text('Configuración'),
               onTap: () {
-                selectPage(3);
+                provider.selectPage(3);
                 Navigator.pop(context);
               },
             ),
@@ -106,7 +98,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Expanded(
               child: IndexedStack(
-                index: _selectedPage,
+                index: provider.selectedPage,
                 children: [MaintenancePage(), CustomersPage(), UsersPage(), SettingsPage()],
               ),
             ),
